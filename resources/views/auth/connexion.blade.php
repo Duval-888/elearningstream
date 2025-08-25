@@ -13,32 +13,30 @@
 
       <hr class="my-3">
 
-     <form action="{{ route('connexion') }}" method="POST">
-  @csrf
+      <form action="{{ route('connexion') }}" method="POST">
+        @csrf
+        <div class="mb-3">
+          <input type="email" name="email" class="form-control" placeholder="Email" value="{{ old('email') }}" required>
+        </div>
 
-  <div class="mb-3">
-    <input type="email" name="email" class="form-control" placeholder="Email" value="{{ old('email') }}" required>
-  </div>
+        <div class="mb-3">
+          <input type="password" name="password" class="form-control" placeholder="Password" required>
+        </div>
 
-  <div class="mb-3">
-    <input type="password" name="password" class="form-control" placeholder="Password" required>
-  </div>
+        <button type="submit" class="btn btn-danger w-100">Se connecter</button>
 
-  <button type="submit" class="btn btn-danger w-100">Se connecter</button>
+        <div class="text-center mt-3">
+          <a href="#">Mot de passe oublié ?</a>
+        </div>
 
-  <div class="text-center mt-3">
-    <a href="#">Mot de passe oublié ?</a>
-  </div>
-
-  @if (errors->any())
-    <ul class="mt-3 px-3 py-2 bg-light border rounded">
-      @foreach (errors->all() as error)
-        <li class="text-danger">{{ $error }}</li>
-      @endforeach
-    </ul>
-  @endif
-</form>
-
+        @if ($errors->any())
+          <ul class="mt-3 px-3 py-2 bg-light border rounded">
+            @foreach ($errors->all() as $error)
+              <li class="text-danger">{{ $error }}</li>
+            @endforeach
+          </ul>
+        @endif
+      </form>
 
       <div class="text-center mt-4">
         <small>Pas encore inscrit ? <a href="{{ route('show.inscription') }}">Créer un compte</a></small>

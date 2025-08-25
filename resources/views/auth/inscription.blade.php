@@ -1,35 +1,38 @@
 <x-layout :title="'Inscription'" :hideNavbar="true" :hideFooter="true">
-  <h2>Inscription</h2>
-  <form action="{{ route('inscription') }}" method="POST">
-    @csrf
-    <h2>Acceder a un compte</h2>
-    <label for="name">Name</label>
-    <input type="text" 
-    name="name" required
-    value="{{ old('name') }}">
+  <div class="d-flex justify-content-center align-items-center vh-100">
+    <div class="bg-white p-5 rounded shadow" style="width: 100%; max-width: 400px;">
+      <h3 class="text-center mb-4">Créer un compte</h3>
 
-    <label for="email">Email:</label>
-    <input type="email" 
-    name="email" required
-    value="{{ old('email') }}">
+      <form action="{{ route('inscription') }}" method="POST">
+        @csrf
 
-    <label for="password">Password:</label>
-    <input type="password" 
-    name="password" required>
+        <div class="mb-3">
+          <input type="text" name="name" class="form-control" placeholder="Nom complet" value="{{ old('name') }}" required>
+        </div>
 
-    <label for="password_confirmation">Confirmer le mot de passe</label>
-    <input type="password" 
-    name="password_confirmation" required>
-    
-    <button type="submit" class="btn mt-4">S'inscrire</button>
+        <div class="mb-3">
+          <input type="email" name="email" class="form-control" placeholder="Email" value="{{ old('email') }}" required>
+        </div>
 
-    <!--validation errors-->
-    @if ($errors->any())
-    <ul class="px-4 py-2 bg-red-100">
-      @foreach ($errors->all() as $error)
-      <li class="my-2 text-red-500">{{$error}}</li>
-      @endforeach
-    </ul>
-    @endif
-  </form>
+        <div class="mb-3">
+          <input type="password" name="password" class="form-control" placeholder="Mot de passe" required>
+        </div>
+
+        <div class="mb-3">
+          <input type="password" name="password_confirmation" class="form-control" placeholder="Confirmer le mot de passe" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100">S'inscrire</button>
+
+        @if ($errors->any())
+        <ul class="mt-3 px-3 py-2 bg-light border rounded">
+            @foreach ($errors->all() as $error)
+              <li class="text-danger">{{ $error }}</li>
+            @endforeach
+          </ul>
+        @endif
+      </form>
+    </div>
+  </div>
 </x-layout>
+
