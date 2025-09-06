@@ -64,3 +64,42 @@ select:focus[data-flux-control] {
 /* \[:where(&)\]:size-4 {
     @apply size-4;
 } */
+
+/* Forum and Chat specific styles */
+.forum-category-card {
+    transition: box-shadow 0.3s ease;
+}
+
+.forum-category-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.chat-message {
+    animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.online-indicator {
+    position: relative;
+}
+
+.online-indicator::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 12px;
+    height: 12px;
+    background-color: #10B981;
+    border: 2px solid white;
+    border-radius: 50%;
+}
+
+.discussion-item:hover {
+    background-color: #f9fafb;
+    transition: background-color 0.2s ease;
+}

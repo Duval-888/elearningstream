@@ -11,9 +11,15 @@
     
     <div class="collapse navbar-collapse" id="navmenu">
       <ul class="navbar-nav me-auto">
-        <li class="nav-item"><a href="#learn" class="nav-link text-danger">What you'll learn</a></li>
-        <li class="nav-item"><a href="#questions" class="nav-link text-danger">Questions</a></li>
-        <li class="nav-item"><a href="#instructor" class="nav-link text-danger">Instructors</a></li>
+        <li class="nav-item">
+          <a href="#learn" class="nav-link text-danger">What you'll learn</a>
+        </li>
+        <li class="nav-item">
+          <a href="#questions" class="nav-link text-danger">Questions</a>
+        </li>
+        <li class="nav-item">
+          <a href="#instructor" class="nav-link text-danger">Instructors</a>
+        </li>
       </ul>
 
       @if ($showAuthButtons)

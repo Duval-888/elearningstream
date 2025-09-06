@@ -22,6 +22,9 @@ class AuthController extends Controller
     /**
      * Show login page.
      */
+public function showVideos(){
+    return view('auth.videos');
+}
     public function showConnexion()
     {
         return view('auth.connexion');
@@ -42,6 +45,7 @@ class AuthController extends Controller
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
+            'role' => 'apprenant', // Rôle par défaut
         ]);
 
         Auth::login($user);
@@ -89,5 +93,6 @@ class AuthController extends Controller
     {
         return $this->inscription($request);
     }
+
 
 }

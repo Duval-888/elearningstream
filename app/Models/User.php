@@ -22,6 +22,11 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
+        'phone',
+        'bio',
+        'avatar',
+        'is_active',
     ];
 
     /**
@@ -57,5 +62,85 @@ class User extends Authenticatable
             ->take(2)
             ->map(fn ($word) => Str::substr($word, 0, 1))
             ->implode('');
+    }
+
+    /**
+     * Get the courses that belong to the user (for instructors)
+     */
+    public function courses()
+    {
+        return $this->hasMany(Course::class, 'instructor_id');
+    }
+
+    /**
+     * Get the courses the user is enrolled in (for students)
+     */
+    public function enrollments()
+    {
+        return $this->hasMany(Enrollment::class);
+    }
+
+    /**
+     * Get enrolled courses
+     */
+    public function enrolledCourses()
+    {
+        return $this->belongsToMany(Course::class, 'enrollments')->withPivot('progress', 'completed_at')->withTimestamps();
+    }
+
+    /**
+     * Get user's certificates
+     */
+    public function certificates()
+    {
+        return $this->hasMany(Certificate::class);
+    }
+
+    /**
+     * Get live sessions as instructor
+     */
+    public function instructorSessions()
+    {
+        return $this->hasMany(LiveSession::class, 'instructor_id');
+    }
+
+    /**
+     * Get live sessions as participant
+     */
+    public function participantSessions()
+    {
+        return $this->belongsToMany(LiveSession::class, 'session_participants')->withPivot('joined_at', 'left_at', 'duration_minutes')->withTimestamps();
+    }
+
+    /**
+     * Check if user has a specific role
+     */
+    public function hasRole($role)
+    {
+        return $this->role === $role;
+    }
+
+    /**
+     * Check if user is admin
+     */
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
+    }
+
+    /**
+     * Check if user is instructor
+     */
+    public function isInstructor()
+    {
+        return $this->role === 'formateur';
+    }
+
+    /**
+     * Check if user is student
+     */
+    public function isStudent()
+    {
+        return $this->role === 'apprenant';
     }
 }
