@@ -69,4 +69,5 @@ class Certificate extends Model
         // Logic to generate PDF certificate
         // This would integrate with a PDF library like TCPDF or DomPDF
     }
+
 }

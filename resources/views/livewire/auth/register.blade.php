@@ -48,6 +48,19 @@
             viewable
         />
 
+        <!-- Role Selection -->
+        <div>
+            <label for="role" class="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1">
+                {{ __('Choose your role') }}
+            </label>
+            <select wire:model="role" id="role" required class="form-select w-full px-3 py-2 border rounded-md text-sm">
+                <option value="">{{ __('-- Select a role --') }}</option>
+                <option value="apprenant">{{ __('Apprenant') }}</option>
+                <option value="formateur">{{ __('Formateur') }}</option>
+                <option value="admin">{{ __('Administrateur') }}</option>
+            </select>
+        </div>
+
         <div class="flex items-center justify-end">
             <flux:button type="submit" variant="primary" class="w-full">
                 {{ __('Create account') }}

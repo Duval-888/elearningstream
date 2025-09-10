@@ -1,0 +1,51 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Models\Course;
+use App\Models\Enrollment;
+use App\Models\SessionLive;
+use App\Models\Certificate;
+
+class DashboardApprenantController extends Controller
+{
+    public function index()
+    {
+        $user = auth()->user();
+        $enrollments = $user->enrollments()->with('course')->get();
+        $courseIds = $enrollments->pluck('course_id');
+        $liveSessions = \App\Models\SessionLive::where('is_active', true)
+            ->whereIn('course_id', $courseIds)
+            ->get();
+        $certificates = $user->certificates()->with('course')->get();
+        return view('dashboard.apprenant', compact('enrollments', 'liveSessions', 'certificates'));
+    }
+
+    public function courses()
+    {
+        $user = auth()->user();
+        $courses = $user->enrollments()->with('course')->get();
+        return view('dashboard.apprenant-courses', compact('courses'));
+    }
+
+    public function progression()
+    {
+        $user = auth()->user();
+        $progression = []; // À calculer
+        return view('dashboard.apprenant-progression', compact('progression'));
+    }
+
+    public function sessionlive()
+    {
+        $sessions = SessionLive::where('is_active', true)->get();
+        return view('dashboard.apprenant-sessionlive', compact('sessions'));
+    }
+
+    public function certificates()
+    {
+        $user = auth()->user();
+        $certificates = Certificate::where('user_id', $user->id)->get();
+        return view('dashboard.apprenant-certificates', compact('certificates'));
+    }
+}

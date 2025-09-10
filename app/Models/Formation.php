@@ -1,0 +1,28 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Formation extends Model
+{
+    protected $fillable = [
+        'title',
+        'description',
+        'slug',
+        'level',
+        'price',
+        'is_active',
+        'creator_id',
+    ];
+
+    public function apprenants()
+    {
+        return $this->belongsToMany(User::class)->withPivot('progression')->withTimestamps();
+    }
+
+    public function sessionsLive()
+    {
+        return $this->hasMany(SessionLive::class);
+    }
+}

@@ -22,36 +22,52 @@ class AuthController extends Controller
     /**
      * Show login page.
      */
-public function showVideos(){
-    return view('auth.videos');
-}
     public function showConnexion()
     {
         return view('auth.connexion');
     }
 
+    public function showVideos()
+    {
+        return view('auth.videos');
+    }
+
     /**
      * Handle registration.
      */
-    public function inscription(Request $request)
+
+  public function inscription(Request $request)
     {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users', 'email')],
             'password' => ['required', 'confirmed', Password::min(8)],
+            'role' => ['required', Rule::in(['apprenant', 'formateur', 'admin'])],
         ]);
 
         $user = User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
-            'role' => 'apprenant', // Rôle par défaut
+            'role' => $validated['role'],
         ]);
 
         Auth::login($user);
         $request->session()->regenerate();
 
-        return redirect()->route('dashboard')->with('status', 'Bienvenue!');
+        return redirect($this->redirectTo());
+    }
+
+    protected function redirectTo()
+    {
+        $role = auth()->user()->role;
+
+        return match ($role) {
+            'admin' => route('dashboard.admin'),
+            'formateur' => route('dashboard.formateur'),
+            'apprenant' => route('dashboard.apprenant'),
+            default => '/home',
+        };
     }
 
     /**
@@ -59,18 +75,22 @@ public function showVideos(){
      */
     public function connexion(Request $request)
     {
-        $validated = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
-        ]);
+        $credentials = $request->only('email', 'password');
 
-        if(Auth::attempt($validated)){
+        if (auth()->attempt($credentials)) {
             $request->session()->regenerate();
-             return redirect()->route('home');
+            $user = auth()->user();
+
+            // 🔁 Redirection intelligente selon le rôle
+            return match ($user->role) {
+                'admin' => redirect()->route('dashboard.admin'),
+                'formateur' => redirect()->route('dashboard.formateur'),
+                'apprenant' => redirect()->route('dashboard.apprenant'),
+                default => auth()->logout() && abort(403, 'Rôle inconnu.'),
+            };
         }
-        throw ValidationException::withMessages([
-            'credentials'=>'Desolé, les informations entrées sont incohérentes.'
-        ]);
+
+        return back()->withErrors(['email' => 'Identifiants incorrects']);
     }
 
     /**
@@ -93,6 +113,4 @@ public function showVideos(){
     {
         return $this->inscription($request);
     }
-
-
 }

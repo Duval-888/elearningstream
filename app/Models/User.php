@@ -143,4 +143,16 @@ class User extends Authenticatable
     {
         return $this->role === 'apprenant';
     }
+     
+
+    public function formations()
+{
+    return $this->belongsToMany(Formation::class)->withPivot('progression')->withTimestamps();
+}
+
+public function certificats()
+{
+    return $this->hasMany(Certificat::class);
+}
+
 }

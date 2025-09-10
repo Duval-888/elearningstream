@@ -19,44 +19,13 @@ class DashboardController extends Controller
     public function apprenant()
     {
         $user = auth()->user();
-        
-        // Données par défaut pour éviter les erreurs
-        $courses = collect(); // Variable attendue par la vue
-        $progression = 0;
-        $notifications = collect();
-        $certificates = collect();
-
-        // Si les tables existent, récupérer les vraies données
-        try {
-            $courses = Course::published()->latest()->get();
-            $certificates = Certificate::where('user_id', $user->id)
-                                      ->with('course')
-                                      ->latest()
-                                      ->get();
-        } catch (\Exception $e) {
-            // Si les tables n'existent pas encore, utiliser des données par défaut
-        }
-
-        return view('dashboard.apprenant', compact('courses', 'progression', 'notifications', 'certificates'));
-    }
-
-    public function formateur()
-    {
-        $user = auth()->user();
-        
-        // Données par défaut
-        $courses = collect();
-        $students = collect();
-
-        try {
-            // Get instructor's courses
-            $courses = Course::where('instructor_id', $user->id)->get();
-            $students = User::where('role', 'apprenant')->get();
-        } catch (\Exception $e) {
-            // Tables pas encore créées
-        }
-
-        return view('dashboard.formateur', compact('courses', 'students'));
+        $enrollments = $user->enrollments()->with('course')->get();
+        $liveSessions = \App\Models\LiveSession::where('is_recorded', false)
+            ->where('status', 'live')
+            ->whereIn('course_id', $enrollments->pluck('course_id'))
+            ->get();
+        $certificates = $user->certificates()->with('course')->get();
+        return view('dashboard.apprenant', compact('enrollments', 'liveSessions', 'certificates'));
     }
 
     public function admin()
@@ -105,14 +74,29 @@ class DashboardController extends Controller
 
     public function formation()
     {
-        try {
-            $formations = Course::all();
-        } catch (\Exception $e) {
-            $formations = collect();
-        }
-        
-        return view('dashboard.formation', compact('formations'));
+        return view('dashboard.formation');
     }
+  
+public function formateur()
+{
+    $user = auth()->user();
+
+    $stats = [
+        'courses_count' => Course::where('instructor_id', $user->id)->count(),
+        'live_sessions_count' => LiveSession::where('instructor_id', $user->id)->count(),
+        'students_count' => Enrollment::whereHas('course', function ($query) use ($user) {
+            $query->where('instructor_id', $user->id);
+        })->distinct('user_id')->count('user_id'),
+    ];
+
+    $recentCourses = Course::where('instructor_id', $user->id)
+                           ->latest()
+                           ->limit(5)
+                           ->get();
+
+    return view('dashboard.formateur', compact('stats', 'recentCourses'));
+}
+
 
     public function sessionlive()
     {
@@ -154,7 +138,8 @@ class DashboardController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $user->id,
-            'role' => 'required|in:apprenant,formateur,admin',
+            'role' => 'required|string|in:apprenant,formateur,admin',
+
             'is_active' => 'boolean'
         ]);
 

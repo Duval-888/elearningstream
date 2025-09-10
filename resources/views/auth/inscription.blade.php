@@ -22,6 +22,16 @@
           <input type="password" name="password_confirmation" class="form-control" placeholder="Confirmer le mot de passe" required>
         </div>
 
+        <!-- ✅ Sélection du rôle -->
+        <div class="mb-3">
+          <select name="role" class="form-select" required>
+            <option value="">-- Choisir un rôle --</option>
+            <option value="apprenant" {{ old('role') == 'apprenant' ? 'selected' : '' }}>Apprenant</option>
+            <option value="formateur" {{ old('role') == 'formateur' ? 'selected' : '' }}>Formateur</option>
+            <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Administrateur</option>
+          </select>
+        </div>
+
         <button type="submit" class="btn btn-primary w-100">S'inscrire</button>
 
         @if ($errors->any())
@@ -35,4 +45,3 @@
     </div>
   </div>
 </x-layout>
-

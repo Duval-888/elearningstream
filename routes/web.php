@@ -7,17 +7,31 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\FormationController;
 use App\Http\Controllers\LiveSessionController;
 use App\Http\Controllers\EnrollmentController;
 use App\Http\Controllers\CertificateController;
 use App\Http\Controllers\ForumController;
 use App\Http\Controllers\ChatController;
+use Illuminate\Database\Schema\Blueprint;
+use App\Http\Controllers\SearchController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\StreamingController;
+use App\Http\Controllers\NotificationController;
+
 
 Route::get('/', function () {
     return view('home');
 })->name('home');
 
 Route::get('/videos',[AuthController::class,'showVideos'])->name('show.videos');
+Route::get('/search', [SearchController::class, 'global'])->name('search.global');
+Route::get('/admin/apprenants', [AdminController::class, 'apprenants'])->name('admin.apprenants');
+Route::get('/admin/formateurs', [AdminController::class, 'formateurs'])->name('admin.formateurs');
+Route::get('/streaming', [StreamingController::class, 'index'])->name('streaming.index');
+Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+Route::resource('formations', FormationController::class);
+
 
 Route::middleware('guest')->controller(AuthController::class)->group(function (){
     Route::get('/inscription','showInscription')->name('show.inscription');
@@ -32,22 +46,23 @@ Route::post('/courses/{course}/enroll', [CourseController::class, 'enroll'])->na
 
 Route::post('/deconnexion',[AuthController::class,'deconnexion'])->name('deconnexion');
 
+// Dashboard Formation
+Route::get('/dashboard/formateur', [DashboardController::class, 'formateur'])->name('dashboard.formateur');
+
+// Dashboard Apprenant
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard/apprenant', [DashboardController::class, 'apprenant'])->name('dashboard.apprenant');
+    Route::get('/dashboard/apprenant/courses', [DashboardController::class, 'courses'])->name('apprenant.courses');
+    Route::get('/dashboard/apprenant/progress', [DashboardController::class, 'progression'])->name('apprenant.progression');
+    Route::get('/dashboard/apprenant/sessionlive', [DashboardController::class, 'sessionlive'])->name('apprenant.sessionlive');
+    Route::get('/dashboard/apprenant/certificates', [DashboardController::class, 'certificates'])->name('apprenant.certificates');
     Route::get('/dashboard/formateur', [DashboardController::class, 'formateur'])->name('dashboard.formateur');
     Route::get('/dashboard/admin', [DashboardController::class, 'admin'])->name('dashboard.admin');
-    Route::get('/dashboard/formation', [DashboardController::class, 'formation'])->name('dashboard.formation');
-    Route::get('/dashboard/sessionlive', [DashboardController::class, 'sessionlive'])->name('dashboard.sessionlive');
-    Route::get('/dashboard/forums', [DashboardController::class, 'forums'])->name('dashboard.forums');
-    Route::get('/dashboard/chat', [DashboardController::class, 'chat'])->name('dashboard.chat');
-});
-
-// Admin routes for user management
-Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/users/{user}/edit', [DashboardController::class, 'editUser'])->name('admin.edit');
     Route::put('/admin/users/{user}', [DashboardController::class, 'updateUser'])->name('admin.update');
     Route::delete('/admin/users/{user}', [DashboardController::class, 'deleteUser'])->name('admin.delete');
 });
+
 
 // Live Sessions routes - vues publiques
 Route::middleware(['auth'])->group(function () {
@@ -118,23 +133,13 @@ Route::get('/dashboard/sessionlive/create', function() {
 })->name('sessionlive.create');
 
 Route::get('dashboard', function() {
-    $user = auth()->user();
-    
-    // Si l'utilisateur n'a pas de rôle défini, lui donner le rôle apprenant par défaut
-    if (!$user->role) {
-        $user->update(['role' => 'apprenant']);
-    }
-    
-    switch($user->role) {
-        case 'admin':
-            return redirect()->route('dashboard.admin');
-        case 'formateur':
-            return redirect()->route('dashboard.formateur');
-        case 'apprenant':
-        default:
-            return redirect()->route('dashboard.apprenant');
-    }
+    return view('dashboard');
 })->middleware(['auth'])->name('dashboard');
+
+// Dashboard Chat
+Route::middleware(['auth'])->get('/dashboard/chat', [DashboardController::class, 'chat'])->name('dashboard.chat');
+// Dashboard Forums
+Route::middleware(['auth'])->get('/dashboard/forums', [DashboardController::class, 'forums'])->name('dashboard.forums');
 
 Route::post('signup',[AuthController::class,'store'])->name('signup.store');
 
@@ -147,3 +152,19 @@ Route::middleware(['auth'])->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
+Route::get('/dashboard/formation', [DashboardController::class, 'formation'])->name('dashboard.formation');
+//here
+Route::middleware(['auth', 'role:formateur,admin'])->group(function () {
+    Route::get('/dashboard/formateur', [DashboardController::class, 'formateur'])->name('dashboard.formateur');
+});
+
+
+
+Route::view('dashboard', 'dashboard')
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
+
+Route::get('/dashboard/sessionlive', [DashboardController::class, 'sessionlive'])
+    ->middleware(['auth'])
+    ->name('dashboard.sessionlive');
