@@ -25,4 +25,10 @@ class Formation extends Model
     {
         return $this->hasMany(SessionLive::class);
     }
+
+    public function inscriptions()
+{
+    return $this->hasMany(\App\Models\Inscription::class);
+}
+
 }

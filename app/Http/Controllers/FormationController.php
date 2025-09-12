@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Formation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use App\Models\Inscription;
 
 class FormationController extends Controller
 {
@@ -25,11 +26,18 @@ class FormationController extends Controller
             'title' => 'required',
             'level' => 'required',
             'price' => 'required|numeric',
+            'video_url' => 'nullable|url|regex:/^https:\/\/(www\.)?youtube\.com\/watch\?v=.+$/',
+        'cover_image' => 'nullable|image|max:2048',
         ]);
 
         $data = $request->all();
         $data['slug'] = Str::slug($request->title) . '-' . uniqid(); // Slug unique
         $data['creator_id'] = auth()->id();
+
+        if ($request->hasFile('cover_image')) {
+        $path = $request->file('cover_image')->store('formations', 'public');
+        $data['cover_image'] = $path;
+    }
 
         Formation::create($data);
 
@@ -47,10 +55,16 @@ class FormationController extends Controller
             'title' => 'required',
             'level' => 'required',
             'price' => 'required|numeric',
+            'video_url' => 'nullable|url|regex:/^https:\/\/(www\.)?youtube\.com\/watch\?v=.+$/',
+        'cover_image' => 'nullable|image|max:2048',
         ]);
 
         $data = $request->all();
         $data['slug'] = Str::slug($request->title) . '-' . uniqid(); // Regénère le slug si le titre change
+        if ($request->hasFile('cover_image')) {
+        $path = $request->file('cover_image')->store('formations', 'public');
+        $data['cover_image'] = $path;
+    }
 
         $formation->update($data);
 
@@ -62,4 +76,35 @@ class FormationController extends Controller
         $formation->delete();
         return redirect()->route('formations.index')->with('success', 'Formation supprimée.');
     }
+
+public function mesFormations()
+{
+    $formations = Formation::whereIn('id', Inscription::where('user_id', auth()->id())->pluck('formation_id'))->get();
+    return view('formations.mes', compact('formations'));
+}
+
+public function inscrits(Formation $formation)
+{
+    $inscriptions = $formation->inscriptions()->with('user')->get();
+    return view('formations.inscrits', compact('formation', 'inscriptions'));
+}
+
+public function dashboard()
+{
+    $formations = Formation::where('creator_id', auth()->id())->withCount('inscriptions')->get();
+
+    $stats = [
+        'courses_count' => $formations->count(),
+        'live_sessions_count' => 0,
+        'students_count' => Inscription::whereIn('formation_id', $formations->pluck('id'))->count(),
+    ];
+
+    $recentCourses = $formations->sortByDesc('created_at')->take(5);
+
+    // ✅ Ajoute 'formations' ici
+    return view('dashboard.formateur', compact('formations', 'stats', 'recentCourses'));
+}
+
+
+
 }

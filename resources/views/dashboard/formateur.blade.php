@@ -70,4 +70,26 @@
         @endforelse
     </div>
 </div>
+
+{{-- 📊 Formations créées et nombre d'inscrits --}}
+<h2 class="text-2xl fw-bold mb-4 mt-5">📊 Mes formations & inscriptions</h2>
+@forelse($formations as $formation)
+    <div class="card mb-3">
+        <div class="card-body">
+            @if($formation->cover_image)
+    <img src="{{ asset('storage/' . $formation->cover_image) }}" class="img-fluid mb-2" style="max-height: 200px;">
+@endif
+
+            <h5>{{ $formation->title }}</h5>
+            <p>{{ $formation->description }}</p>
+            <p><strong>Inscriptions :</strong> {{ $formation->inscriptions_count }}</p>
+            <a href="{{ route('formations.show', $formation) }}" class="btn btn-sm btn-outline-primary">Voir la formation</a>
+            <a href="{{ route('formations.inscrits', $formation) }}" class="btn btn-sm btn-outline-success">👥 Voir les inscrits</a>
+
+        </div>
+    </div>
+@empty
+    <p class="text-muted">Aucune formation créée pour le moment.</p>
+@endforelse
+
 @endsection

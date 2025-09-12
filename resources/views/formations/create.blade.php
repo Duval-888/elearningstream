@@ -1,3 +1,4 @@
+@php use Illuminate\Support\Str; @endphp
 @extends('layouts.dashboard')
 
 @section('content')
@@ -8,7 +9,7 @@
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
-    <form action="{{ route('formations.store') }}" method="POST">
+    <form action="{{ route('formations.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
 
         <div class="mb-3">
@@ -47,6 +48,16 @@
                 <option value="1">Oui</option>
                 <option value="0">Non</option>
             </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="video_url" class="form-label">Lien YouTube</label>
+            <input type="url" name="video_url" id="video_url" class="form-control" placeholder="https://www.youtube.com/watch?v=...">
+        </div>
+
+        <div class="mb-3">
+            <label for="cover_image" class="form-label">Image de couverture</label>
+            <input type="file" name="cover_image" id="cover_image" class="form-control">
         </div>
 
         <button type="submit" class="btn btn-primary">Créer la formation</button>

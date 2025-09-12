@@ -31,6 +31,10 @@ Route::get('/admin/formateurs', [AdminController::class, 'formateurs'])->name('a
 Route::get('/streaming', [StreamingController::class, 'index'])->name('streaming.index');
 Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
 Route::resource('formations', FormationController::class);
+Route::get('/mes-formations', [FormationController::class, 'mesFormations'])->name('formations.mes');
+Route::get('formations/{formation}/inscrits', [FormationController::class, 'inscrits'])->name('formations.inscrits');
+
+
 
 
 Route::middleware('guest')->controller(AuthController::class)->group(function (){
@@ -47,7 +51,7 @@ Route::post('/courses/{course}/enroll', [CourseController::class, 'enroll'])->na
 Route::post('/deconnexion',[AuthController::class,'deconnexion'])->name('deconnexion');
 
 // Dashboard Formation
-Route::get('/dashboard/formateur', [DashboardController::class, 'formateur'])->name('dashboard.formateur');
+Route::get('/dashboard/formateur', [FormationController::class, 'dashboard'])->name('dashboard.formateur');
 
 // Dashboard Apprenant
 Route::middleware(['auth'])->group(function () {
@@ -156,7 +160,7 @@ require __DIR__.'/auth.php';
 Route::get('/dashboard/formation', [DashboardController::class, 'formation'])->name('dashboard.formation');
 //here
 Route::middleware(['auth', 'role:formateur,admin'])->group(function () {
-    Route::get('/dashboard/formateur', [DashboardController::class, 'formateur'])->name('dashboard.formateur');
+    Route::get('/dashboard/formateur', [FormationController::class, 'dashboard'])->name('dashboard.formateur');
 });
 
 
