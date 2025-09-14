@@ -15,6 +15,7 @@ return new class extends Migration {
             $table->enum('level', ['debutant', 'intermediaire', 'avance'])->default('debutant');
             $table->decimal('price', 10, 2)->default(0);
             $table->boolean('is_active')->default(true);
+            $table->string('video_url')->nullable(); // <-- Ajout pour la vidéo
             $table->foreignId('creator_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();
         });

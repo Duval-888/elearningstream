@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Formation extends Model
 {
-   protected $fillable = [
+  protected $fillable = [
     'title',
     'description',
     'slug',
@@ -16,6 +16,7 @@ class Formation extends Model
     'creator_id',
     'video_url', // ✅ Ajouté ici
 ];
+
 
 
     public function apprenants()
