@@ -9,11 +9,18 @@ use App\Models\Inscription;
 
 class FormationController extends Controller
 {
-    public function index()
-    {
-        $formations = Formation::where('creator_id', auth()->id())->get();
-        return view('formations.index', compact('formations'));
-    }
+  public function landing()
+{
+    $formations = Formation::all();
+    return view('courses.formation', compact('formations'));
+
+}
+
+public function index()
+{
+    $formations = Formation::all();
+    return view('formations.index', compact('formations'));
+}
 
     public function create()
     {
@@ -103,6 +110,11 @@ public function dashboard()
 
     // ✅ Ajoute 'formations' ici
     return view('dashboard.formateur', compact('formations', 'stats', 'recentCourses'));
+}
+public function show($slug)
+{
+    $formation = Formation::where('slug', $slug)->firstOrFail();
+    return view('formations.show', compact('formation'));
 }
 
 

@@ -18,6 +18,7 @@ use App\Http\Controllers\SearchController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\StreamingController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\CommentController;
 
 
 Route::get('/', function () {
@@ -33,6 +34,31 @@ Route::get('/notifications', [NotificationController::class, 'index'])->name('no
 Route::resource('formations', FormationController::class);
 Route::get('/mes-formations', [FormationController::class, 'mesFormations'])->name('formations.mes');
 Route::get('formations/{formation}/inscrits', [FormationController::class, 'inscrits'])->name('formations.inscrits');
+Route::post('/inscriptions', [InscriptionController::class, 'store'])->name('inscriptions.store');
+// Vue de création de formation (déjà gérée par Route::resource)
+Route::get('/formations/create', [FormationController::class, 'create'])->name('formations.create');
+
+// Vue de modification de formation
+Route::get('/formations/{formation}/edit', [FormationController::class, 'edit'])->name('formations.edit');
+Route::put('/formations/{formation}', [FormationController::class, 'update'])->name('formations.update');
+
+// Vue d’affichage des formations du formateur (déjà présente)
+Route::get('/mes-formations', [FormationController::class, 'mesFormations'])->name('formations.mes');
+
+// Vue d’affichage des inscrits à une formation (déjà présente)
+Route::get('/formations/{formation}/inscrits', [FormationController::class, 'inscrits'])->name('formations.inscrits');
+
+// Vue de détail d’une formation
+Route::get('/formations/{formation}', [FormationController::class, 'show'])->name('formations.show');
+
+// Suppression d’une formation
+Route::delete('/formations/{formation}', [FormationController::class, 'destroy'])->name('formations.destroy');
+
+// Inscription à une formation (déjà présente)
+Route::post('/inscriptions', [InscriptionController::class, 'store'])->name('inscriptions.store');
+Route::post('/comments', [CommentController::class, 'store'])->name('comments.store');
+
+
 
 
 
