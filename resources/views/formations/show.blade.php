@@ -46,10 +46,12 @@
         @else
             {{-- Vidéo locale --}}
             <h4>Vidéo locale :</h4>
-            <video width="720" controls style="margin-bottom: 15px;">
-                <source src="{{ asset($formation->video_url) }}" type="video/mp4">
-                Votre navigateur ne supporte pas la vidéo.
-            </video>
+
+            <video width="720" controls class="mb-3">
+    <source src="{{ asset($formation->video_url) }}" type="video/mp4">
+    Votre navigateur ne supporte pas la vidéo.
+</video>
+
 
             {{-- 📥 Bouton de téléchargement --}}
             <a href="{{ asset($formation->video_url) }}" download class="btn btn-outline-primary mb-3">
@@ -98,10 +100,28 @@
 @forelse($formation->videos as $video)
     <div class="mb-4 {{ auth()->user()->videosVues->contains($video->id) ? 'border border-success p-2' : '' }}">
         <h5>{{ $video->title }}</h5>
-        <video width="720" controls>
-            <source src="{{ asset($video->video_url) }}" type="video/mp4">
-            Votre navigateur ne supporte pas la vidéo.
-        </video>
+      @php
+    $isYoutube = Str::contains($video->video_url, 'youtube.com') || Str::contains($video->video_url, 'youtu.be');
+    if ($isYoutube && Str::contains($video->video_url, 'watch?v=')) {
+        $embedUrl = Str::replace('watch?v=', 'embed/', $video->video_url);
+    } elseif ($isYoutube && Str::contains($video->video_url, 'youtu.be/')) {
+        $videoId = Str::after($video->video_url, 'youtu.be/');
+        $embedUrl = 'https://www.youtube.com/embed/' . $videoId;
+    }
+@endphp
+
+@if($isYoutube)
+    <div class="ratio ratio-16x9 mb-3">
+        <iframe src="{{ $embedUrl }}" frameborder="0" allowfullscreen></iframe>
+    </div>
+@else
+    <video width="720" controls class="mb-3">
+        <source src="{{ asset($video->video_url) }}" type="video/mp4">
+        Votre navigateur ne supporte pas la vidéo.
+    </video>
+@endif
+
+
 
         {{-- ✅ Progression individuelle --}}
      @auth

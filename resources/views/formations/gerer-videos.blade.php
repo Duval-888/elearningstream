@@ -13,6 +13,30 @@
             <div class="card-body">
                 <h5>{{ $video->title }}</h5>
                 <p><strong>Ordre :</strong> {{ $video->ordre ?? 'Non défini' }}</p>
+
+                {{-- 🎥 Affichage de la vidéo --}}
+                @php
+                    $isYoutube = Str::contains($video->video_url, 'youtube.com') || Str::contains($video->video_url, 'youtu.be');
+                    if ($isYoutube && Str::contains($video->video_url, 'watch?v=')) {
+                        $embedUrl = Str::replace('watch?v=', 'embed/', $video->video_url);
+                    } elseif ($isYoutube && Str::contains($video->video_url, 'youtu.be/')) {
+                        $videoId = Str::after($video->video_url, 'youtu.be/');
+                        $embedUrl = 'https://www.youtube.com/embed/' . $videoId;
+                    }
+                @endphp
+
+                @if($isYoutube)
+                    <div class="ratio ratio-16x9 mb-3">
+                        <iframe src="{{ $embedUrl }}" frameborder="0" allowfullscreen></iframe>
+                    </div>
+                @else
+                    <video width="100%" controls class="mb-3">
+                        <source src="{{ asset($video->video_url) }}" type="video/mp4">
+                        Votre navigateur ne supporte pas la vidéo.
+                    </video>
+                @endif
+
+                {{-- 🛠️ Actions --}}
                 <a href="{{ route('videos.edit', $video) }}" class="btn btn-warning btn-sm">✏️ Modifier</a>
                 <form action="{{ route('videos.destroy', $video) }}" method="POST" class="d-inline">
                     @csrf

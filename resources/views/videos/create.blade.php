@@ -15,7 +15,12 @@
 
         <div class="mb-3">
             <label for="video" class="form-label">Fichier vidéo (.mp4)</label>
-            <input type="file" name="video" class="form-control" accept="video/mp4" required>
+            <input type="file" name="video" class="form-control" accept="video/mp4">
+        </div>
+
+        <div class="mb-3">
+            <label for="youtube_url" class="form-label">Lien YouTube (optionnel)</label>
+            <input type="url" name="youtube_url" class="form-control" placeholder="https://www.youtube.com/watch?v=...">
         </div>
 
         <div class="mb-3">

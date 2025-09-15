@@ -113,9 +113,8 @@ public function dashboard()
     // ✅ Ajoute 'formations' ici
     return view('dashboard.formateur', compact('formations', 'stats', 'recentCourses'));
 }
-public function show($slug)
+public function show(Formation $formation)
 {
-    $formation = Formation::where('slug', $slug)->firstOrFail();
     $videosTotal = $formation->videos()->count();
     $videosVues = $formation->videos()
         ->whereIn('id', auth()->user()->videosVues->pluck('id'))
@@ -125,6 +124,7 @@ public function show($slug)
 
     return view('formations.show', compact('formation', 'progression'));
 }
+
 public function certificat(Formation $formation)
 {
     $videosTotal = $formation->videos()->count();

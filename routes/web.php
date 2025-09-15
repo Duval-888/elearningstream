@@ -69,6 +69,8 @@ Route::get('/videos/{video}/edit', [VideosController::class, 'edit'])->name('vid
 Route::put('/videos/{video}', [VideosController::class, 'update'])->name('videos.update');
 Route::delete('/videos/{video}', [VideosController::class, 'destroy'])->name('videos.destroy');
 Route::post('/videos/{video}/vue', [VideosController::class, 'marquerVue'])->name('videos.vue');
+Route::get('/formations/{formation}/videos', [FormationController::class, 'gererVideos'])->name('formations.videos');
+
 
 
 
