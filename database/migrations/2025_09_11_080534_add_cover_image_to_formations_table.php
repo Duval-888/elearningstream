@@ -12,7 +12,6 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('formations', function (Blueprint $table) {
-            $table->string('video_url')->nullable();
             $table->string('cover_image')->nullable();
         });
     }
