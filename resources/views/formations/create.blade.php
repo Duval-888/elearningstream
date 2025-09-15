@@ -43,16 +43,17 @@
         </div>
 
         <div class="mb-3">
+    <label for="video_url" class="form-label">Lien YouTube</label>
+    <input type="url" name="video_url" id="video_url" class="form-control" placeholder="https://www.youtube.com/watch?v=...">
+</div>
+
+
+        <div class="mb-3">
             <label for="is_active" class="form-label">Activer la formation</label>
             <select name="is_active" id="is_active" class="form-select">
                 <option value="1">Oui</option>
                 <option value="0">Non</option>
             </select>
-        </div>
-
-        <div class="mb-3">
-            <label for="video_url" class="form-label">Lien YouTube</label>
-            <input type="url" name="video_url" id="video_url" class="form-control" placeholder="https://www.youtube.com/watch?v=...">
         </div>
 
         <div class="mb-3">

@@ -29,7 +29,7 @@
                     <tr>
                         <td>{{ $formation->title }}</td>
                         <td>{{ ucfirst($formation->level) }}</td>
-                        <td>{{ number_format($formation->price, 2) }}</td>
+                        <td>{{ number_format($formation->price, 2) }} €</td>
                         <td>
                             @if($formation->is_active)
                                 <span class="badge bg-success">Active</span>
@@ -39,6 +39,7 @@
                         </td>
                         <td>
                             <a href="{{ route('formations.edit', $formation) }}" class="btn btn-sm btn-primary">✏️ Modifier</a>
+                            <a href="{{ route('formations.show', $formation->slug) }}" class="btn btn-sm btn-info">👁️ Voir le cours</a>
                             <form action="{{ route('formations.destroy', $formation) }}" method="POST" style="display:inline-block;" onsubmit="return confirm('Confirmer la suppression ?')">
                                 @csrf
                                 @method('DELETE')
@@ -46,33 +47,29 @@
                             </form>
                         </td>
                     </tr>
-
-                    {{-- 🎬 Vidéo affichée en dehors du tableau --}}
-                    @if($formation->video_url)
-                        @php
-                            $embedUrl = Str::replace('watch?v=', 'embed/', $formation->video_url);
-                        @endphp
-                        <tr>
-                            <td colspan="5">
-                                <div class="ratio ratio-16x9 mb-4">
-                                    <iframe 
-                                        src="{{ $embedUrl }}" 
-                                        frameborder="0" 
-                                        allowfullscreen>
-                                    </iframe>
-                                </div>
-                            </td>
-                        </tr>
-                    @else
-                        <tr>
-                            <td colspan="5">
-                                <span class="text-muted">Aucune vidéo</span>
-                            </td>
-                        </tr>
-                    @endif
                 @endforeach
             </tbody>
         </table>
+
+        {{-- 🎬 Vidéos affichées en dehors du tableau --}}
+        @foreach($formations as $formation)
+            @if($formation->video_url)
+                @php
+                    $embedUrl = Str::replace('watch?v=', 'embed/', $formation->video_url);
+                @endphp
+                <div class="mb-4">
+                    <h5 class="text-center">{{ $formation->title }} 🎬</h5>
+                    <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;" class="rounded shadow-sm">
+                        <iframe 
+                            src="{{ $embedUrl }}" 
+                            style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" 
+                            frameborder="0" 
+                            allowfullscreen>
+                        </iframe>
+                    </div>
+                </div>
+            @endif
+        @endforeach
     @endif
 </div>
 @endsection

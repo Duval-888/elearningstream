@@ -6,18 +6,16 @@ use Illuminate\Database\Eloquent\Model;
 
 class Formation extends Model
 {
-  protected $fillable = [
-    'title',
-    'description',
-    'slug',
-    'level',
-    'price',
-    'is_active',
-    'creator_id',
-    'video_url', // ✅ Ajouté ici
-];
-
-
+    protected $fillable = [
+        'title',
+        'description',
+        'slug',
+        'level',
+        'price',
+        'is_active',
+        'creator_id',
+        'video_url',
+    ];
 
     public function apprenants()
     {
@@ -30,14 +28,13 @@ class Formation extends Model
     }
 
     public function inscriptions()
-{
-    return $this->hasMany(\App\Models\Inscription::class);
+    {
+        return $this->hasMany(\App\Models\Inscription::class);
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
 }
 
-public function comments()
-{
-    return $this->hasMany(Comment::class);
-}
-
-
-}
