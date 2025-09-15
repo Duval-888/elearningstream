@@ -38,14 +38,20 @@
                             @endif
                         </td>
                         <td>
-                            <a href="{{ route('formations.edit', $formation) }}" class="btn btn-sm btn-primary">✏️ Modifier</a>
-                            <a href="{{ route('formations.show', $formation->slug) }}" class="btn btn-sm btn-info">👁️ Voir le cours</a>
-                            <form action="{{ route('formations.destroy', $formation) }}" method="POST" style="display:inline-block;" onsubmit="return confirm('Confirmer la suppression ?')">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-sm btn-danger">🗑️ Supprimer</button>
-                            </form>
-                        </td>
+    <a href="{{ route('formations.edit', $formation) }}" class="btn btn-sm btn-primary">✏️ Modifier</a>
+    <a href="{{ route('formations.show', $formation->slug) }}" class="btn btn-sm btn-info">👁️ Voir le cours</a>
+    <form action="{{ route('formations.destroy', $formation) }}" method="POST" style="display:inline-block;" onsubmit="return confirm('Confirmer la suppression ?')">
+        @csrf
+        @method('DELETE')
+        <button type="submit" class="btn btn-sm btn-danger">🗑️ Supprimer</button>
+    </form>
+
+    {{-- 🎬 Gérer les vidéos --}}
+    <a href="{{ route('formations.videos', $formation) }}" class="btn btn-sm btn-outline-warning mt-1">
+        🎬 Gérer les vidéos
+    </a>
+</td>
+
                     </tr>
                 @endforeach
             </tbody>

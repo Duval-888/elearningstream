@@ -36,5 +36,11 @@ class Formation extends Model
     {
         return $this->hasMany(Comment::class);
     }
+
+    public function videos()
+{
+    return $this->hasMany(Video::class);
+}
+
 }
 

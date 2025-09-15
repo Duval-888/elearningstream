@@ -19,6 +19,8 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\StreamingController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\VideosController;
+
 
 
 Route::get('/', function () {
@@ -57,6 +59,21 @@ Route::delete('/formations/{formation}', [FormationController::class, 'destroy']
 // Inscription à une formation (déjà présente)
 Route::post('/inscriptions', [InscriptionController::class, 'store'])->name('inscriptions.store');
 Route::post('/comments', [CommentController::class, 'store'])->name('comments.store');
+Route::get('/mes-formations', [FormationController::class, 'mesFormations'])->name('formations.mes');
+Route::get('/formations/{formation}/certificat', [FormationController::class, 'certificat'])->name('formations.certificat');
+
+// Routes liées aux vidéos
+Route::get('/formations/{formation}/videos/create', [VideosController::class, 'create'])->name('videos.create');
+Route::post('/videos', [VideosController::class, 'store'])->name('videos.store');
+Route::get('/videos/{video}/edit', [VideosController::class, 'edit'])->name('videos.edit');
+Route::put('/videos/{video}', [VideosController::class, 'update'])->name('videos.update');
+Route::delete('/videos/{video}', [VideosController::class, 'destroy'])->name('videos.destroy');
+Route::post('/videos/{video}/vue', [VideosController::class, 'marquerVue'])->name('videos.vue');
+
+
+
+
+
 
 
 

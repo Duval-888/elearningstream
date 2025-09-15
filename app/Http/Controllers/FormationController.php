@@ -86,7 +86,9 @@ public function index()
 
 public function mesFormations()
 {
-    $formations = Formation::whereIn('id', Inscription::where('user_id', auth()->id())->pluck('formation_id'))->get();
+    $formationIds = Inscription::where('user_id', auth()->id())->pluck('formation_id');
+$formations = Formation::whereIn('id', $formationIds)->withCount('videos')->get();
+
     return view('formations.mes', compact('formations'));
 }
 
@@ -114,7 +116,42 @@ public function dashboard()
 public function show($slug)
 {
     $formation = Formation::where('slug', $slug)->firstOrFail();
-    return view('formations.show', compact('formation'));
+    $videosTotal = $formation->videos()->count();
+    $videosVues = $formation->videos()
+        ->whereIn('id', auth()->user()->videosVues->pluck('id'))
+        ->count();
+
+    $progression = $videosTotal > 0 ? round(($videosVues / $videosTotal) * 100) : 0;
+
+    return view('formations.show', compact('formation', 'progression'));
+}
+public function certificat(Formation $formation)
+{
+    $videosTotal = $formation->videos()->count();
+    $videosVues = $formation->videos()
+        ->whereIn('id', auth()->user()->videosVues->pluck('id'))
+        ->count();
+
+    $progression = $videosTotal > 0 ? round(($videosVues / $videosTotal) * 100) : 0;
+
+    if ($progression < 100) {
+        abort(403, 'Formation non complétée.');
+    }
+
+    // Ici tu peux générer ou afficher le certificat
+    return view('formations.certificat', compact('formation'));
+}
+
+public function gererVideos(Formation $formation)
+{
+    // Vérifie que l'utilisateur est bien le créateur
+    if (auth()->id() !== $formation->creator_id) {
+        abort(403);
+    }
+
+    $videos = $formation->videos()->orderBy('ordre')->get();
+
+    return view('formations.gerer-videos', compact('formation', 'videos'));
 }
 
 

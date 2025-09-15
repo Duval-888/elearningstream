@@ -155,4 +155,10 @@ public function certificats()
     return $this->hasMany(Certificat::class);
 }
 
+public function videosVues()
+{
+    return $this->belongsToMany(Video::class)->withPivot('viewed_at')->withTimestamps();
+}
+
+
 }

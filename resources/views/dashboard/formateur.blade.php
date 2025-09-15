@@ -85,7 +85,6 @@
             <p><strong>Inscriptions :</strong> {{ $formation->inscriptions_count }}</p>
             <a href="{{ route('formations.show', $formation) }}" class="btn btn-sm btn-outline-primary">Voir la formation</a>
             <a href="{{ route('formations.inscrits', $formation) }}" class="btn btn-sm btn-outline-success">👥 Voir les inscrits</a>
-
         </div>
     </div>
 @empty
