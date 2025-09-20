@@ -10,17 +10,28 @@ use App\Models\Certificate;
 
 class DashboardApprenantController extends Controller
 {
-    public function index()
-    {
-        $user = auth()->user();
-        $enrollments = $user->enrollments()->with('course')->get();
-        $courseIds = $enrollments->pluck('course_id');
-        $liveSessions = \App\Models\SessionLive::where('is_active', true)
-            ->whereIn('course_id', $courseIds)
-            ->get();
-        $certificates = $user->certificates()->with('course')->get();
-        return view('dashboard.apprenant', compact('enrollments', 'liveSessions', 'certificates'));
-    }
+  public function index()
+{
+    $user = auth()->user();
+
+    $enrollments = $user->enrollments()->with('course')->get();
+    $courseIds = $enrollments->pluck('course_id');
+
+    $liveSessions = SessionLive::where('is_active', true)
+        ->whereIn('course_id', $courseIds)
+        ->get();
+
+    $certificates = $user->certificates()->with('course')->get();
+
+    // ✅ Ajout des formations suivies
+   $formations = \App\Models\Inscription::where('user_id', $user->id)
+    ->with('formation')
+    ->get()
+    ->pluck('formation');
+
+    return view('dashboard.apprenant', compact('enrollments', 'liveSessions', 'certificates', 'formations'));
+}
+
 
     public function courses()
     {

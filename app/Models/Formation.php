@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
+
 
 class Formation extends Model
 {
@@ -21,6 +23,11 @@ class Formation extends Model
     {
         return $this->belongsToMany(User::class)->withPivot('progression')->withTimestamps();
     }
+
+    public function creator()
+{
+    return $this->belongsTo(User::class, 'creator_id');
+}
 
     public function sessionsLive()
     {
@@ -41,6 +48,25 @@ class Formation extends Model
 {
     return $this->hasMany(Video::class);
 }
+
+protected static function boot()
+{
+    parent::boot();
+
+    static::creating(function ($formation) {
+        if (empty($formation->slug)) {
+            $baseSlug = Str::slug($formation->title);
+            $formation->slug = $baseSlug;
+
+            // Évite les doublons
+            if (Formation::where('slug', $baseSlug)->exists()) {
+                $formation->slug = $baseSlug . '-' . uniqid();
+            }
+        }
+    });
+}
+
+
 
 }
 

@@ -20,6 +20,14 @@ use App\Http\Controllers\StreamingController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\VideosController;
+use App\Http\Controllers\InscriptionController;
+use App\Http\Controllers\CatalogueController;
+use App\Models\Formation;
+use App\Http\Controllers\PanierController;
+use App\Http\Controllers\DashboardApprenantController;
+
+
+
 
 
 
@@ -70,6 +78,26 @@ Route::put('/videos/{video}', [VideosController::class, 'update'])->name('videos
 Route::delete('/videos/{video}', [VideosController::class, 'destroy'])->name('videos.destroy');
 Route::post('/videos/{video}/vue', [VideosController::class, 'marquerVue'])->name('videos.vue');
 Route::get('/formations/{formation}/videos', [FormationController::class, 'gererVideos'])->name('formations.videos');
+
+
+Route::get('/test-catalogue', function () {
+    $formations = Formation::where('is_active', true)->latest()->paginate(9);
+    return view('formations.catalogue', compact('formations'));
+});
+Route::post('/panier/add', [PanierController::class, 'add'])->name('panier.add');
+Route::get('/mon-panier', [PanierController::class, 'index'])->name('panier.index');
+
+Route::get('/courses', function () {
+    return view('courses');
+});
+
+Route::get('/catalogue', [CatalogueController::class, 'index'])->name('formations.catalogue');
+Route::get('/mes-formations', [PanierController::class, 'mesFormations'])->name('mes.formations');
+Route::get('/panier', function () {
+    return redirect()->route('mes.formations');
+})->name('panier');
+
+
 
 
 

@@ -145,9 +145,24 @@ class User extends Authenticatable
     }
      
 
-    public function formations()
+public function formations()
 {
-    return $this->belongsToMany(Formation::class)->withPivot('progression')->withTimestamps();
+    return $this->belongsToMany(
+        Formation::class,
+        'inscriptions',   // ← nom EXACT de la table pivot
+        'user_id',        // ← clé vers users.id dans la pivot
+        'formation_id'    // ← clé vers formations.id dans la pivot
+    )->withPivot('progression')->withTimestamps();
+}
+
+public function users()
+{
+    return $this->belongsToMany(
+        User::class,
+        'inscriptions',
+        'formation_id',
+        'user_id'
+    )->withPivot('progression')->withTimestamps();
 }
 
 public function certificats()

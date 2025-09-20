@@ -2,37 +2,60 @@
     $user = auth()->user();
 @endphp
 
-<div class="sidebar">
+<aside class="w-64 bg-gray-800 text-white p-6 h-screen fixed top-0 left-0 overflow-y-auto">
     {{-- 👤 Profil utilisateur --}}
-    <div class="d-flex align-items-center mb-4">
-        <img src="{{ asset('images/profil.png') }}" alt="Photo de profil" class="rounded-circle me-2" width="40" height="40">
+    <div class="flex items-center mb-6">
+        <img src="{{ asset('images/profil.png') }}" alt="Photo de profil" class="rounded-full w-10 h-10 mr-3">
         <div>
             <strong>{{ $user->name }}</strong><br>
-            <small class="text-muted">{{ ucfirst($user->role) }}</small>
+            <small class="text-gray-300">{{ ucfirst($user->role) }}</small>
         </div>
     </div>
 
-    <h5 class="mb-4">📂 Menu {{ ucfirst($user->role) }}</h5>
+    <h5 class="text-lg font-semibold mb-4">📂 Menu {{ ucfirst($user->role) }}</h5>
 
     {{-- Apprenant --}}
     @if($user->role === 'apprenant')
-        <a href="{{ route('dashboard.apprenant') }}" class="d-block mb-2">🏠 Accueil</a>
-        <a href="{{ route('courses.index') }}" class="d-block mb-2">📘 Mes cours</a>
-        <a href="{{ route('forums.index') }}" class="d-block mb-2">💬 Forums</a>
+      <nav class="space-y-2">
+    <a href="{{ route('dashboard.apprenant') }}"
+       class="block px-2 py-1 rounded 
+              {{ request()->routeIs('dashboard.apprenant') ? 'bg-gray-900 text-indigo-400' : 'hover:bg-gray-700 hover:text-indigo-400' }}">
+        🏠 Accueil
+    </a>
+
+<a href="{{ route('panier') }}"
+   class="block px-4 py-2 rounded 
+          {{ request()->routeIs('mes.formations') ? 'bg-gray-700 text-indigo-400' : 'bg-gray-800 text-white hover:bg-gray-700 hover:text-indigo-400' }}">
+    🛒 Panier
+</a>
+
+
+
+    <a href="{{ route('forums.index') }}"
+       class="block px-2 py-1 rounded 
+              {{ request()->routeIs('forums.index') ? 'bg-gray-900 text-indigo-400' : 'hover:bg-gray-700 hover:text-indigo-400' }}">
+        💬 Forums
+    </a>
+</nav>
+
 
     {{-- Formateur --}}
     @elseif($user->role === 'formateur')
-        <a href="{{ route('dashboard.formateur') }}" class="d-block mb-2">🏠 Accueil</a>
-        <a href="{{ route('formations.index') }}" class="d-block mb-2">📚 Formations</a>
-        <a href="{{ route('streaming.index') }}" class="d-block mb-2">📺 Streaming</a>
-        <a href="{{ route('notifications.index') }}" class="d-block mb-2">🔔 Notifications</a>
+        <nav class="space-y-2">
+            <a href="{{ route('dashboard.formateur') }}" class="block hover:text-indigo-400">🏠 Accueil</a>
+            <a href="{{ route('formations.index') }}" class="block hover:text-indigo-400">📚 Formations</a>
+            <a href="{{ route('streaming.index') }}" class="block hover:text-indigo-400">📺 Streaming</a>
+            <a href="{{ route('notifications.index') }}" class="block hover:text-indigo-400">🔔 Notifications</a>
+        </nav>
 
     {{-- Administrateur --}}
     @elseif($user->role === 'admin')
-        <a href="{{ route('dashboard.admin') }}" class="d-block mb-2">🏠 Accueil</a>
-        <a href="{{ route('admin.apprenants') }}" class="d-block mb-2">🎓 Apprenants</a>
-        <a href="{{ route('admin.formateurs') }}" class="d-block mb-2">🧑‍🏫 Formateurs</a>
-        <a href="{{ route('courses.index') }}" class="d-block mb-2">📘 Formations</a>
-        <a href="{{ route('logout') }}" class="d-block text-danger mt-4">🚪 Déconnexion</a>
+        <nav class="space-y-2">
+            <a href="{{ route('dashboard.admin') }}" class="block hover:text-indigo-400">🏠 Accueil</a>
+            <a href="{{ route('admin.apprenants') }}" class="block hover:text-indigo-400">🎓 Apprenants</a>
+            <a href="{{ route('admin.formateurs') }}" class="block hover:text-indigo-400">🧑‍🏫 Formateurs</a>
+            <a href="{{ route('courses.index') }}" class="block hover:text-indigo-400">📘 Formations</a>
+            <a href="{{ route('logout') }}" class="block text-red-500 mt-4 hover:text-red-400">🚪 Déconnexion</a>
+        </nav>
     @endif
-</div>
+</aside>

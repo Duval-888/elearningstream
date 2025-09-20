@@ -93,7 +93,10 @@
       <div class="col-md-6">
         <h2>Web Chat Communication App</h2>
         <p class="lead">Lorem ipsum dolor sit amet, consectetur. Proin cursus vitae nunc elementum parturient.</p>
-        <a href="#" class="btn btn-danger rounded">Get Started Now</a>
+  <a href="{{ url('/test-catalogue') }}" class="btn btn-primary btn-lg">
+    🚀 Get Started Now
+</a>
+
       </div>
       <div class="img-one col-md-6">
         <img src="images/union.jpg" class="img-fluid rounded">

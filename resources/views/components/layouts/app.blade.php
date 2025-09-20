@@ -1,18 +1,18 @@
-<div class="d-flex">
-    {{-- Sidebar --}}
-    <aside class="bg-dark text-white p-3" style="width: 250px;">
-        <h4>{{ $title ?? 'Menu' }}</h4>
-        <ul class="nav flex-column">
-            <li class="nav-item"><a href="{{ route('home') }}" class="nav-link text-white">🏠 Accueil</a></li>
-            <li class="nav-item"><a href="{{ route('formations.index') }}" class="nav-link text-white">📚 Formations</a></li>
-            <li class="nav-item"><a href="{{ route('courses.index') }}" class="nav-link text-white">🎓 Cours</a></li>
-            <li class="nav-item"><a href="{{ route('profile') }}" class="nav-link text-white">👤 Profil</a></li>
-        </ul>
-    </aside>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Courses</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    {{-- Contenu principal --}}
-    <main class="flex-grow-1 p-4">
+    <!-- ✅ Tailwind CSS via CDN (pour prototypage rapide) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+      <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+</head>
+<body class="bg-gray-900 text-white">
+    <div class="max-w-7xl mx-auto px-4 py-8">
         {{ $slot }}
-    </main>
-</div>
-
+    </div>
+</body>
+</html>

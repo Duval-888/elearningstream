@@ -154,6 +154,4 @@ public function gererVideos(Formation $formation)
     return view('formations.gerer-videos', compact('formation', 'videos'));
 }
 
-
-
 }
