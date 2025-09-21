@@ -16,17 +16,37 @@ class DashboardController extends Controller
         // Middleware d'authentification seulement
     }
 
-    public function apprenant()
-    {
-        $user = auth()->user();
-        $enrollments = $user->enrollments()->with('course')->get();
-        $liveSessions = \App\Models\LiveSession::where('is_recorded', false)
+   public function apprenant()
+{
+    $user = auth()->user();
+
+    // Collections vides par défaut si pas connecté (tu as dit que les routes ne sont pas protégées pour l’instant)
+    $enrollments   = collect();
+    $liveSessions  = collect();
+    $certificates  = collect();
+    $formations    = collect();
+
+    if ($user) {
+        $enrollments  = $user->enrollments()->with('course')->get();
+
+        // adapte ces colonnes à ton modèle LiveSession si besoin
+        $liveSessions = \App\Models\LiveSession::query()
+            ->where('is_recorded', false)
             ->where('status', 'live')
-            ->whereIn('course_id', $enrollments->pluck('course_id'))
+            ->when($enrollments->isNotEmpty(), function ($q) use ($enrollments) {
+                $q->whereIn('course_id', $enrollments->pluck('course_id'));
+            })
             ->get();
+
         $certificates = $user->certificates()->with('course')->get();
-        return view('dashboard.apprenant', compact('enrollments', 'liveSessions', 'certificates'));
+
+        // ✅ récupère les formations suivies (via ta relation belongsToMany 'formations' sur User)
+        // et pré-calcule le compteur de vidéos pour éviter un N+1
+        $formations   = $user->formations()->withCount('videos')->get();
     }
+
+    return view('dashboard.apprenant', compact('enrollments', 'liveSessions', 'certificates', 'formations'));
+}
 
     public function admin()
     {

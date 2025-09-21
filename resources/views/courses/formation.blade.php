@@ -87,23 +87,50 @@
 </nav>
 
 <!-- Hero Section -->
-<section class="chat py-5 m-4 text-center">
-  <div class="container">
-    <div class="row align-items-center">
-      <div class="col-md-6">
-        <h2>Web Chat Communication App</h2>
-        <p class="lead">Lorem ipsum dolor sit amet, consectetur. Proin cursus vitae nunc elementum parturient.</p>
-  <a href="{{ url('/test-catalogue') }}" class="btn btn-primary btn-lg">
-    🚀 Get Started Now
-</a>
-
+   {{-- 🔔 Flash messages (Bootstrap) --}}
+    @if(session('warning'))
+      <div class="alert alert-warning alert-dismissible fade show mb-4" role="alert">
+        {{ session('warning') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
       </div>
-      <div class="img-one col-md-6">
-        <img src="images/union.jpg" class="img-fluid rounded">
+    @endif
+    @if(session('success'))
+      <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+        {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+      </div>
+    @endif
+
+<section class="chat py-5 m-4 text-center text-md-start">
+  <div class="container">
+
+    <div class="row align-items-center g-5">
+      <div class="col-md-6">
+        <h2 class="mb-3">Web Chat Communication App</h2>
+        <p class="lead mb-4">
+          Lorem ipsum dolor sit amet, consectetur. Proin cursus vitae nunc elementum parturient.
+        </p>
+
+        {{-- ✅ Un seul bouton, qui passe par la route "start" --}}
+        <a href="{{ route('start') }}" class="btn btn-primary btn-lg">
+          🚀 Get Started Now
+        </a>
+      </div>
+
+      {{-- ✅ Image décoration à droite (remplace le chemin si besoin) --}}
+      <div class="col-md-6 text-center">
+        <img
+          src="{{ asset('images/home-girl.jpg') }}"  
+          class="img-fluid rounded shadow"
+          alt="Illustration formation"
+          loading="lazy"
+        >
       </div>
     </div>
   </div>
 </section>
+
+
 <!-- Features Section -->
 <section class="py-5">
   <div class="container text-center">

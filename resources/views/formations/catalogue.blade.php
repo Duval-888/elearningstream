@@ -16,7 +16,8 @@ $panierCount = session('panier') ? count(session('panier')) : 0;
             {{ $panierCount }}
         </span>
     @endif
-    <span>Panier</span>
+   <a href="{{ route('panier') }}">Panier</a>
+
 </a>
 </nav>
 </div>
@@ -42,17 +43,16 @@ $panierCount = session('panier') ? count(session('panier')) : 0;
             💰 {{ $formation->price }} €
         </p>
 
-       <form action="{{ url('/panier/add') }}" method="POST">
+      <form action="{{ route('panier.add') }}" method="POST">
     @csrf
-
     <input type="hidden" name="formation_id" value="{{ $formation->id }}">
-
     <button type="submit"
             class="w-full bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded transition duration-200 ease-in-out transform hover:scale-105 flex items-center justify-center space-x-2">
         <i class="fa-solid fa-cart-shopping"></i>
         <span>Suivre la formation</span>
     </button>
 </form>
+
 
     </div>
 </div>

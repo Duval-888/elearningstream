@@ -80,34 +80,43 @@ Route::post('/videos/{video}/vue', [VideosController::class, 'marquerVue'])->nam
 Route::get('/formations/{formation}/videos', [FormationController::class, 'gererVideos'])->name('formations.videos');
 
 
+// Catalogue
 Route::get('/test-catalogue', function () {
     $formations = Formation::where('is_active', true)->latest()->paginate(9);
     return view('formations.catalogue', compact('formations'));
-});
+})->name('test.catalogue');
+
+// Panier : ajout
 Route::post('/panier/add', [PanierController::class, 'add'])->name('panier.add');
-Route::get('/mon-panier', [PanierController::class, 'index'])->name('panier.index');
 
-Route::get('/courses', function () {
-    return view('courses');
-});
-
-Route::get('/catalogue', [CatalogueController::class, 'index'])->name('formations.catalogue');
+// Mes formations (depuis le panier / session)
 Route::get('/mes-formations', [PanierController::class, 'mesFormations'])->name('mes.formations');
-Route::get('/panier', function () {
-    return redirect()->route('mes.formations');
-})->name('panier');
+
+// Panier → redirige vers mes.formations
+Route::get('/panier', fn () => redirect()->route('mes.formations'))->name('panier');
+
+// Page immersive d’une formation (lecteur + playlist)
+// (⚠️ place-la APRÈS la route /mes-formations simple)
+Route::get('/mes-formations/{formation}', [FormationController::class, 'watch'])->name('formations.watch');
+
+// (Optionnel) Alias si certaines vues utilisent encore route('formations.mes')
+Route::get('/dashboard/mes-formations', fn () => redirect()->route('mes.formations'))->name('formations.mes');
 
 
 
 
 
+Route::get('/start', function () {
+    // Si l'utilisateur N'EST PAS connecté → on revient sur la page avec un message
+    if (!auth()->check()) {
+        // On essaie de revenir à la page précédente, sinon / (home)
+        $back = url()->previous() ?: route('home');
+        return redirect($back)->with('warning', 'Veuillez vous inscrire avant de commencer.');
+    }
 
-
-
-
-
-
-
+    // Si connecté → on envoie vers votre page catalogue
+    return redirect()->route('test.catalogue');
+})->name('start');
 
 
 Route::middleware('guest')->controller(AuthController::class)->group(function (){

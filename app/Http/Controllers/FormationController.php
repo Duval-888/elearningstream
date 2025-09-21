@@ -77,6 +77,14 @@ public function index()
 
         return redirect()->route('formations.index')->with('success', 'Formation mise à jour !');
     }
+    public function watch(\App\Models\Formation $formation)
+{
+    // Récupère les vidéos triées
+    $videos = $formation->videos()->orderBy('ordre')->get();
+
+    return view('formations.watch', compact('formation', 'videos'));
+}
+
 
     public function destroy(Formation $formation)
     {

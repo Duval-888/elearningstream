@@ -1,6 +1,8 @@
 @extends('layouts.dashboard')
 
 @section('content')
+ @include('formations._mes_grid', ['formations' => $formations])
+ 
 <div class="container mt-5">
     <h2>Mes formations suivies</h2>
 
