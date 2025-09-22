@@ -25,7 +25,9 @@ use App\Http\Controllers\CatalogueController;
 use App\Models\Formation;
 use App\Http\Controllers\PanierController;
 use App\Http\Controllers\DashboardApprenantController;
-
+use App\Http\Controllers\Formateur\ProfileController;
+use App\Http\Controllers\Formateur\QuizController;
+use App\Http\Controllers\Formateur\QuestionController;
 
 
 
@@ -101,6 +103,44 @@ Route::get('/mes-formations/{formation}', [FormationController::class, 'watch'])
 
 // (Optionnel) Alias si certaines vues utilisent encore route('formations.mes')
 Route::get('/dashboard/mes-formations', fn () => redirect()->route('mes.formations'))->name('formations.mes');
+
+Route::middleware('auth')->prefix('dashboard/formateur')->name('formateur.')->group(function () {
+    // Profil
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile');
+    Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
+
+    // Quiz (index)
+    Route::get('/quiz', [QuizController::class, 'index'])->name('quiz');
+
+    // 🔁 Alias pour compatibilité avec route('formateur.quizzes')
+    Route::get('/quizzes', [QuizController::class, 'index'])->name('quizzes');
+
+    // CRUD quizzes
+    Route::get('/quizzes/create', [QuizController::class, 'create'])->name('quizzes.create');
+    Route::post('/quizzes', [QuizController::class, 'store'])->name('quizzes.store');
+    Route::get('/quizzes/{quiz}/edit', [QuizController::class, 'edit'])->name('quizzes.edit');
+    Route::put('/quizzes/{quiz}', [QuizController::class, 'update'])->name('quizzes.update');
+    Route::delete('/quizzes/{quiz}', [QuizController::class, 'destroy'])->name('quizzes.destroy');
+
+    // CRUD questions
+    Route::post('/quizzes/{quiz}/questions', [QuestionController::class, 'store'])->name('questions.store');
+    Route::put('/questions/{question}', [QuestionController::class, 'update'])->name('questions.update');
+    Route::delete('/questions/{question}', [QuestionController::class, 'destroy'])->name('questions.destroy');
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -10,65 +10,64 @@ class Quiz extends Model
     use HasFactory;
 
     protected $fillable = [
+        'user_id',
+        'course_id',      // 👈 ajouté
         'title',
         'description',
-        'course_id',
-        'questions',
-        'time_limit',
-        'max_attempts',
-        'passing_score',
-        'is_active'
+        'is_published',
     ];
 
     protected $casts = [
-        'questions' => 'array',
-        'is_active' => 'boolean',
+        'is_published' => 'boolean',
     ];
 
-    /**
-     * Get the course that owns the quiz
-     */
+    // Ramène automatiquement questions_count (utile pour tes listes)
+    protected $withCount = ['questions'];
+
+    /* =======================
+       Relations
+    ========================*/
+    public function owner()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
     public function course()
     {
-        return $this->belongsTo(Course::class);
+        return $this->belongsTo(\App\Models\Course::class, 'course_id'); // 👈 ajouté
     }
 
-    /**
-     * Get quiz attempts
-     */
-    public function attempts()
+    public function questions()
     {
-        return $this->hasMany(QuizAttempt::class);
+        // Tri par ordre (si présent), puis id pour stabilité
+        return $this->hasMany(Question::class)
+                    ->orderBy('ordre')
+                    ->orderBy('id');
     }
 
-    /**
-     * Get total questions count
-     */
-    public function getTotalQuestionsAttribute()
+    /* =======================
+       Scopes pratiques
+    ========================*/
+    public function scopeMine($query, $userId)
     {
-        return count($this->questions ?? []);
+        return $query->where('user_id', $userId);
     }
 
-    /**
-     * Check if user can take quiz
-     */
-    public function canUserTake(User $user)
+    public function scopePublished($query)
     {
-        if (!$this->is_active) {
-            return false;
-        }
-
-        $attempts = $this->attempts()->where('user_id', $user->id)->count();
-        return $attempts < $this->max_attempts;
+        return $query->where('is_published', true);
     }
 
-    /**
-     * Get user's best score
-     */
-    public function getUserBestScore(User $user)
+    public function scopeForCourse($query, $courseId) // 👈 bonus pratique
     {
-        return $this->attempts()
-                   ->where('user_id', $user->id)
-                   ->max('score') ?? 0;
+        return $query->where('course_id', $courseId);
+    }
+
+    /* =======================
+       Helpers optionnels
+    ========================*/
+    public function getStatusLabelAttribute(): string
+    {
+        return $this->is_published ? 'Publié' : 'Brouillon';
     }
 }

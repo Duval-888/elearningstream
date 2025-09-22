@@ -1,137 +1,40 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - E-learning</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-    {{-- Bootstrap & Icons --}}
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <title>@yield('title', 'Dashboard - E-learning')</title>
 
-    {{-- Vite assets --}}
+    {{-- Tailwind CDN (simple et rapide) --}}
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    {{-- Font Awesome (icônes) --}}
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    {{-- (si tu utilises Vite pour tes assets, on le laisse) --}}
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-
-    {{-- Sidebar styling --}}
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', sans-serif;
-        }
-
-        .wrapper {
-            display: flex;
-            min-height: 100vh;
-            position: relative;
-            z-index: 1;
-        }
-
-        .sidebar {
-            width: 250px;
-            background-color: #f8f9fa;
-            padding: 1rem;
-            border-right: 1px solid #dee2e6;
-            transition: transform 0.3s ease;
-            z-index: 1001;
-        }
-
-        .sidebar.hidden {
-            transform: translateX(-100%);
-        }
-
-        .sidebar h4 {
-            font-weight: bold;
-            margin-bottom: 1.5rem;
-        }
-
-        .sidebar a {
-            text-decoration: none;
-            color: #333;
-            font-weight: 500;
-            display: block;
-            padding: 0.5rem 0;
-            transition: color 0.2s ease;
-        }
-
-        .sidebar a:hover {
-            color: #0d6efd;
-        }
-
-        .main-content {
-            flex-grow: 1;
-            padding: 2rem;
-            background-color: #fff;
-            z-index: 1;
-        }
-
-        .toggle-btn {
-            position: fixed;
-            top: 1rem;
-            left: 1rem;
-            z-index: 1002;
-            background-color: #0d6efd;
-            color: white;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 0.25rem;
-            cursor: pointer;
-        }
-
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.4);
-            z-index: 1000;
-            display: none;
-        }
-
-        .overlay.active {
-            display: block;
-        }
-    </style>
 </head>
-<body>
-    {{-- ☰ Bouton pour afficher/masquer la sidebar --}}
-    <button id="toggleSidebar" class="toggle-btn">☰ Menu</button>
+<body class="bg-gray-50 text-gray-900 antialiased">
 
-    {{-- Overlay sombre derrière la sidebar --}}
-    <div id="overlay" class="overlay"></div>
+<div class="min-h-screen flex">
+    {{-- Sidebar fixe / statique --}}
+    <aside class="w-64 bg-green-700 text-white fixed inset-y-0 left-0 shadow-lg">
+        @include('partials.sidebar')
+    </aside>
 
-    <div class="wrapper">
-        {{-- ✅ Sidebar intelligente --}}
-        <div id="sidebar" class="sidebar">
-            @include('partials.sidebar')
-        </div>
+    {{-- Contenu principal (avec marge à gauche = largeur du sidebar) --}}
+    <main class="flex-1 ml-64">
+        {{-- (optionnel) barre supérieure --}}
+        <header class="sticky top-0 bg-white border-b border-gray-200 px-6 py-3 z-10">
+            <h1 class="text-lg font-semibold">@yield('title')</h1>
+        </header>
 
-        {{-- ✅ Contenu principal --}}
-        <div class="main-content">
+        <div class="px-6 py-6">
             @yield('content')
         </div>
-    </div>
+    </main>
+</div>
 
-    {{-- ✅ Script pour gérer l’ouverture/fermeture de la sidebar et overlay --}}
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const toggleBtn = document.getElementById('toggleSidebar');
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('overlay');
-
-            toggleBtn.addEventListener('click', function () {
-                sidebar.classList.toggle('hidden');
-                overlay.classList.toggle('active');
-            });
-
-            overlay.addEventListener('click', function () {
-                sidebar.classList.add('hidden');
-                overlay.classList.remove('active');
-            });
-        });
-    </script>
 </body>
 </html>
