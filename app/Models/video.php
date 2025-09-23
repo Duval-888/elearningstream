@@ -7,12 +7,10 @@ use Illuminate\Support\Facades\Auth;
 
 class Video extends Model
 {
-    protected $fillable = [
-        'title',
-        'video_url',
-        'ordre',
-        'formation_id',
-    ];
+   // app/Models/Video.php
+protected $fillable = [
+    'formation_id', 'title', 'ordre', 'video_url', 'mime_type', 
+];
 
     // Relation avec les utilisateurs qui ont vu la vidéo
     public function vusPar()
@@ -27,4 +25,16 @@ class Video extends Model
             $this->id => ['viewed_at' => now()]
         ]);
     }
+
+    public function quizzes()
+{
+    return $this->hasMany(\App\Models\Quiz::class);
+}
+
+public function formation()
+{
+    return $this->belongsTo(\App\Models\Formation::class);
+}
+
+
 }

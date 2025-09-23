@@ -28,6 +28,7 @@ use App\Http\Controllers\DashboardApprenantController;
 use App\Http\Controllers\Formateur\ProfileController;
 use App\Http\Controllers\Formateur\QuizController;
 use App\Http\Controllers\Formateur\QuestionController;
+use App\Http\Controllers\Formateur\QuizController as FormateurQuizController;
 
 
 
@@ -127,6 +128,59 @@ Route::middleware('auth')->prefix('dashboard/formateur')->name('formateur.')->gr
     Route::put('/questions/{question}', [QuestionController::class, 'update'])->name('questions.update');
     Route::delete('/questions/{question}', [QuestionController::class, 'destroy'])->name('questions.destroy');
 });
+
+
+
+
+Route::get('/videos/{video}/quizzes/create', [QuizController::class, 'createForVideo'])
+    ->name('videos.quizzes.create');
+
+Route::post('/videos/{video}/quizzes', [QuizController::class, 'storeForVideo'])
+    ->name('videos.quizzes.store');
+
+Route::get('/videos/{video}/quizzes/create', [QuizController::class, 'createForVideo'])->name('videos.quizzes.create');
+Route::post('/videos/{video}/quizzes', [QuizController::class, 'storeForVideo'])->name('videos.quizzes.store');
+
+Route::get('/videos/{video}/quizzes/create', [FormateurQuizController::class, 'createForVideo'])
+    ->name('videos.quizzes.create');
+
+Route::post('/videos/{video}/quizzes', [FormateurQuizController::class, 'storeForVideo'])
+    ->name('videos.quizzes.store');
+
+// routes/web.php
+Route::post('/videos/chunk', [\App\Http\Controllers\VideosController::class, 'storeChunk'])
+    ->name('videos.chunk');
+
+Route::middleware('auth')->group(function () {
+    // Créer un quiz pour UNE vidéo précise
+    Route::get('/videos/{video}/quizzes/create', [\App\Http\Controllers\Formateur\QuizController::class, 'createForVideo'])
+        ->name('videos.quizzes.create');
+
+    Route::post('/videos/{video}/quizzes', [\App\Http\Controllers\Formateur\QuizController::class, 'storeForVideo'])
+        ->name('videos.quizzes.store');
+});
+
+
+//APPRENANT
+
+// Dashboard Apprenant
+Route::middleware(['auth'])->group(function () {
+    Route::get('/apprenant/profile', function () {
+        return view('apprenant.profile');
+    })->name('apprenant.profile');
+
+    Route::get('/apprenant/quiz', function () {
+        return view('apprenant.quiz');
+    })->name('apprenant.quiz');
+
+    Route::get('/apprenant/certificats', function () {
+        return view('apprenant.certificats');
+    })->name('apprenant.certificats');
+});
+
+
+
+
 
 
 

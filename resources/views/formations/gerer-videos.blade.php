@@ -1,5 +1,12 @@
 @php
     use Illuminate\Support\Str;
+
+    // Poster (miniature) optionnel : on réutilise l'image de couverture de la formation si dispo
+    $posterUrl = isset($formation->cover_image) && $formation->cover_image
+        ? (Str::startsWith($formation->cover_image, ['http://','https://'])
+            ? $formation->cover_image
+            : asset('storage/'.$formation->cover_image))
+        : null;
 @endphp
 
 @extends('layouts.dashboard')
@@ -29,30 +36,16 @@
 
     {{-- Liste des vidéos --}}
     @forelse($videos as $video)
+
         @php
-            $isYoutube = Str::contains($video->video_url, 'youtube.com')
-                        || Str::contains($video->video_url, 'youtu.be');
+            // Pour les badges (YouTube / type de fichier)
+            $url = $video->video_url ?? '';
+            $isYouTube = (bool) preg_match('/(youtube\.com|youtu\.be)/i', $url);
 
-            // Construire l'URL d'embed YouTube le cas échéant
-            $embedUrl = null;
-            if ($isYoutube) {
-                if (Str::contains($video->video_url, 'watch?v=')) {
-                    $embedUrl = Str::replace('watch?v=', 'embed/', $video->video_url);
-                } elseif (Str::contains($video->video_url, 'youtu.be/')) {
-                    $videoId = Str::after($video->video_url, 'youtu.be/');
-                    $embedUrl = 'https://www.youtube.com/embed/' . $videoId;
-                } elseif (Str::contains($video->video_url, '/shorts/')) {
-                    $videoId = Str::after($video->video_url, '/shorts/');
-                    $videoId = trim($videoId, '/');
-                    $embedUrl = 'https://www.youtube.com/embed/' . $videoId;
-                }
-            }
-
-            // Source MP4 : si URL absolue on l'utilise directement, sinon via asset()
-            $srcMp4 = $video->video_url;
-            if (!$isYoutube && !Str::startsWith($srcMp4, ['http://','https://','//'])) {
-                $srcMp4 = asset($srcMp4);
-            }
+            // Déterminer une étiquette simple côté badge (MP4, MKV, WEBM, …)
+            $path = parse_url($url, PHP_URL_PATH) ?? '';
+            $ext  = Str::lower(pathinfo($path, PATHINFO_EXTENSION));
+            $typeText = $isYouTube ? 'YouTube' : ($ext ? Str::upper($ext) : 'Fichier');
         @endphp
 
         <div class="mb-6 rounded-2xl border border-gray-200 bg-white shadow-sm overflow-hidden">
@@ -66,17 +59,23 @@
                             Ordre : {{ $video->ordre ?? '—' }}
                         </span>
                         <span class="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-700 ring-1 ring-inset ring-emerald-200">
-                            <i class="fa-solid {{ $isYoutube ? 'fa-brands fa-youtube' : 'fa-film' }}"></i>
-                            {{ $isYoutube ? 'YouTube' : 'MP4' }}
+                            <i class="{{ $isYouTube ? 'fa-brands fa-youtube' : 'fa-solid fa-film' }}"></i>
+                            {{ $typeText }}
                         </span>
                     </div>
                 </div>
 
                 {{-- Actions --}}
-                <div class="flex items-center gap-2">
+                <div class="flex flex-wrap items-center gap-2">
                     <a href="{{ route('videos.edit', $video) }}"
                        class="inline-flex items-center gap-2 rounded-lg border border-indigo-200 bg-white px-3 py-2 text-sm font-semibold text-indigo-700 hover:bg-indigo-50">
                         <i class="fa-solid fa-pen-to-square"></i> Modifier
+                    </a>
+
+                    {{-- Créer un quiz pour cette vidéo (assure-toi d'avoir défini cette route) --}}
+                    <a href="{{ route('videos.quizzes.create', $video) }}"
+                       class="inline-flex items-center gap-2 rounded-lg border border-emerald-200 bg-emerald-600 px-3 py-2 text-sm font-semibold text-white hover:bg-emerald-700">
+                        <i class="fa-solid fa-clipboard-question"></i> Créer un quiz
                     </a>
 
                     <form action="{{ route('videos.destroy', $video) }}" method="POST"
@@ -91,24 +90,12 @@
                 </div>
             </div>
 
-            {{-- Player --}}
+            {{-- Player (UN SEUL) via le partial réutilisable --}}
             <div class="bg-gray-50">
-                @if($isYoutube && $embedUrl)
-                    <div class="w-full aspect-video">
-                        <iframe
-                            src="{{ $embedUrl }}"
-                            class="w-full h-full"
-                            frameborder="0"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                            allowfullscreen>
-                        </iframe>
-                    </div>
-                @else
-                    <video controls class="w-full rounded-b-2xl">
-                        <source src="{{ $srcMp4 }}" type="video/mp4">
-                        Votre navigateur ne supporte pas la vidéo.
-                    </video>
-                @endif
+                @include('partials.video_player', [
+                    'video'  => $video,
+                    'poster' => $posterUrl,   // optionnel, peut être null
+                ])
             </div>
         </div>
     @empty

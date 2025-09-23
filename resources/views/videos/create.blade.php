@@ -48,17 +48,26 @@
                        placeholder="Ex. Introduction au module 1">
             </div>
 
-            {{-- Fichier MP4 --}}
+            {{-- 📁 Fichier vidéo (tous formats courants) --}}
             <div>
                 <label for="video" class="block text-sm font-medium text-gray-700 mb-1">
-                    <i class="fa-solid fa-file-video text-emerald-600 mr-1"></i> Fichier vidéo (.mp4)
+                    <i class="fa-solid fa-file-video text-emerald-600 mr-1"></i>
+                    Fichier vidéo (MP4, MKV, WebM, MOV, AVI, OGG, M4V)
                 </label>
-                <input type="file" id="video" name="video" accept="video/mp4"
-                       class="block w-full rounded-xl border-gray-300 focus:border-emerald-500 focus:ring-emerald-500 file:mr-4 file:rounded-lg file:border-0 file:bg-emerald-600 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-emerald-700">
-                <p class="mt-2 text-xs text-gray-500">Optionnel si vous fournissez un lien YouTube.</p>
+                {{-- ✅ Étape 2 : acceptation de tous les formats vidéo --}}
+                <input
+                    type="file"
+                    id="video"
+                    name="video"
+                    accept="video/*"
+                    class="block w-full rounded-xl border-gray-300 focus:border-emerald-500 focus:ring-emerald-500 file:mr-4 file:rounded-lg file:border-0 file:bg-emerald-600 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-emerald-700"
+                >
+                <p class="mt-2 text-xs text-gray-500">
+                    Optionnel si vous fournissez un lien YouTube. Taille max selon configuration serveur.
+                </p>
             </div>
 
-            {{-- Lien YouTube --}}
+            {{-- 🔗 Lien YouTube --}}
             <div>
                 <label for="youtube_url" class="block text-sm font-medium text-gray-700 mb-1">
                     <i class="fa-brands fa-youtube text-red-600 mr-1"></i> Lien YouTube (optionnel)
@@ -66,7 +75,7 @@
                 <input type="url" id="youtube_url" name="youtube_url"
                        class="block w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
                        placeholder="https://www.youtube.com/watch?v=...">
-                <p class="mt-2 text-xs text-gray-500">Vous pouvez fournir soit un MP4, soit un lien YouTube.</p>
+                <p class="mt-2 text-xs text-gray-500">Fournissez soit un fichier vidéo, soit un lien YouTube.</p>
             </div>
 
             {{-- Ordre --}}
