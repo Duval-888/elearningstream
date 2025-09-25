@@ -28,7 +28,7 @@
             <option value="">-- Choisir un rôle --</option>
             <option value="apprenant" {{ old('role') == 'apprenant' ? 'selected' : '' }}>Apprenant</option>
             <option value="formateur" {{ old('role') == 'formateur' ? 'selected' : '' }}>Formateur</option>
-            <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Administrateur</option>
+           
           </select>
         </div>
 

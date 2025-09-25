@@ -29,6 +29,7 @@ use App\Http\Controllers\Formateur\ProfileController;
 use App\Http\Controllers\Formateur\QuizController;
 use App\Http\Controllers\Formateur\QuestionController;
 use App\Http\Controllers\Formateur\QuizController as FormateurQuizController;
+use App\Http\Controllers\UserController;
 
 
 
@@ -179,14 +180,21 @@ Route::middleware(['auth'])->group(function () {
 });
 
 
+Route::prefix('admin')->group(function () {
+    // tableau de bord
+    Route::get('/', [DashboardController::class, 'index'])
+        ->name('dashboard.admin');
 
+    // apprenants
+    Route::get('/apprenants', [UserController::class, 'apprenants'])
+        ->name('admin.apprenants');
 
+    // formateurs
+    Route::get('/formateurs', [UserController::class, 'formateurs'])
+        ->name('admin.formateurs');
 
-
-
-
-
-
+         Route::get('/profil', [DashboardController::class, 'profil'])->name('admin.profil');
+});
 
 
 

@@ -23,7 +23,7 @@
           <input type="password" name="password" class="form-control" placeholder="Password" required>
         </div>
 
-        <button type="submit" class="btn btn-danger w-100">Se connecter</button>
+        <button type="submit" class="btn btn-primary w-100">Se connecter</button>
 
         <div class="text-center mt-3">
           <a href="#">Mot de passe oublié ?</a>

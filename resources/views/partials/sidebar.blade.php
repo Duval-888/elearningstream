@@ -72,24 +72,58 @@
     </nav>
 
 
-    {{-- Administrateur --}}
-    @elseif($user && $user->role === 'admin')
-        <nav class="space-y-1">
-            <a href="{{ route('dashboard.admin') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg text-white/90 hover:text-white hover:bg-emerald-600">
-                <i class="fa-solid fa-house"></i> Accueil
-            </a>
-            <a href="{{ route('admin.apprenants') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg text-white/90 hover:text-white hover:bg-emerald-600">
-                <i class="fa-solid fa-user-graduate"></i> Apprenants
-            </a>
-            <a href="{{ route('admin.formateurs') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg text-white/90 hover:text-white hover:bg-emerald-600">
-                <i class="fa-solid fa-chalkboard-user"></i> Formateurs
-            </a>
-            <a href="{{ route('courses.index') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg text-white/90 hover:text-white hover:bg-emerald-600">
-                <i class="fa-solid fa-book"></i> Formations
-            </a>
-            <a href="{{ route('logout') }}" class="flex items-center gap-3 px-3 py-2 rounded-lg text-red-200 hover:text-white hover:bg-red-600 mt-3">
-                <i class="fa-solid fa-right-from-bring-out"></i> Déconnexion
-            </a>
-        </nav>
-    @endif
+{{-- Administrateur --}}
+@elseif($user && $user->role === 'admin')
+    @php
+        $linkBase = 'flex items-center gap-3 px-3 py-2 rounded-lg transition';
+        $linkIdle = 'text-white/80 hover:text-white hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-white/20';
+        $linkActive = 'text-white bg-emerald-600 shadow-sm';
+    @endphp
+
+    <nav class="space-y-1">
+        {{-- Accueil --}}
+        <a href="{{ route('dashboard.admin') }}"
+           class="{{ $linkBase }} {{ request()->routeIs('dashboard.admin') ? $linkActive : $linkIdle }}">
+            <i class="fa-solid fa-house"></i>
+            <span>Accueil</span>
+        </a>
+
+        {{-- Apprenants --}}
+        <a href="{{ route('admin.apprenants') }}"
+           class="{{ $linkBase }} {{ request()->routeIs('admin.apprenants*') ? $linkActive : $linkIdle }}">
+            <i class="fa-solid fa-user-graduate"></i>
+            <span>Apprenants</span>
+        </a>
+
+        {{-- Formateurs --}}
+        <a href="{{ route('admin.formateurs') }}"
+           class="{{ $linkBase }} {{ request()->routeIs('admin.formateurs*') ? $linkActive : $linkIdle }}">
+            <i class="fa-solid fa-chalkboard-user"></i>
+            <span>Formateurs</span>
+        </a>
+
+        {{-- ⭐ Profil (nouveau) --}}
+        <a href="{{ route('admin.profil') }}"
+           class="{{ $linkBase }} {{ request()->routeIs('admin.profil') ? $linkActive : $linkIdle }}">
+            <i class="fa-solid fa-user-shield"></i>
+            <span>Profil</span>
+        </a>
+
+        {{-- Formations --}}
+        <a href="{{ route('courses.index') }}"
+           class="{{ $linkBase }} {{ request()->routeIs('courses.*') ? $linkActive : $linkIdle }}">
+            <i class="fa-solid fa-book"></i>
+            <span>Formations</span>
+        </a>
+
+        {{-- Déconnexion --}}
+        <a href="{{ route('logout') }}"
+           class="mt-3 {{ $linkBase }} text-red-200 hover:text-white hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-white/20">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            <span>Déconnexion</span>
+        </a>
+    </nav>
+@endif
+
+
 </aside>

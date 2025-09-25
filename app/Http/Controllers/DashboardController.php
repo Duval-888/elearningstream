@@ -183,4 +183,23 @@ public function formateur()
         $user->delete();
         return redirect()->route('dashboard.admin')->with('success', 'Utilisateur supprimé avec succès.');
     }
+
+    //here the modification
+
+    public function profil()
+{
+    $user = auth()->user();
+
+    // Petites métriques facultatives (aucune logique cassée si tables absentes)
+    try {
+        $myCourses = \App\Models\Course::where('instructor_id', $user->id)->count();
+        $myCertifs = method_exists($user, 'certificates') ? $user->certificates()->count() : 0;
+    } catch (\Exception $e) {
+        $myCourses = 0;
+        $myCertifs = 0;
+    }
+
+    return view('admin.profil', compact('user','myCourses','myCertifs'));
+}
+
 }

@@ -6,26 +6,26 @@
   {{-- Header --}}
   <div class="flex items-center justify-between mb-6">
     <div class="flex items-center gap-2">
-      <i class="fa-solid fa-user-graduate text-emerald-700"></i>
-      <h1 class="text-2xl font-semibold text-emerald-900">Apprenants</h1>
+      <i class="fa-solid fa-chalkboard-user text-emerald-700"></i>
+      <h1 class="text-2xl font-semibold text-emerald-900">Formateurs</h1>
     </div>
 
-    {{-- Si tu as une route de création, dé-commente et adapte son nom --}}
+    {{-- Dé-commente si tu as une route de création --}}
     {{--
-    <a href="{{ route('admin.apprenants.create') }}"
+    <a href="{{ route('admin.formateurs.create') }}"
        class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white">
-      <i class="fa-solid fa-user-plus"></i> Nouvel apprenant
+      <i class="fa-solid fa-user-plus"></i> Nouveau formateur
     </a>
     --}}
   </div>
 
   {{-- Barre de recherche locale (optionnelle) --}}
-  <form action="{{ route('admin.apprenants') }}" method="GET" class="mb-5">
+  <form action="{{ route('admin.formateurs') }}" method="GET" class="mb-5">
     <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
       <div class="md:col-span-9">
         <div class="relative">
           <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
-          <input name="q" value="{{ request('q') }}" placeholder="Rechercher un apprenant…"
+          <input name="q" value="{{ request('q') }}" placeholder="Rechercher un formateur…"
                  class="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white ring-1 ring-emerald-200 focus:ring-2 focus:ring-emerald-400 outline-none">
         </div>
       </div>
@@ -71,14 +71,13 @@
           </tr>
           @empty
           <tr>
-            <td colspan="4" class="px-5 py-6 text-center text-slate-500">Aucun apprenant trouvé.</td>
+            <td colspan="4" class="px-5 py-6 text-center text-slate-500">Aucun formateur trouvé.</td>
           </tr>
           @endforelse
         </tbody>
       </table>
     </div>
 
-    {{-- Pagination si disponible --}}
     @if(method_exists($users,'links'))
       <div class="px-5 py-4">{{ $users->withQueryString()->links() }}</div>
     @endif
