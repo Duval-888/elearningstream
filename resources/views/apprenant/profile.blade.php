@@ -9,7 +9,7 @@
 
             <div class="relative p-8 md:p-10 flex flex-col md:flex-row md:items-center gap-6">
                 <div class="relative">
-                    <img src="{{ asset('images/profil.png') }}" class="w-28 h-28 md:w-32 md:h-32 rounded-2xl ring-4 ring-white/20 shadow-xl object-cover" alt="Avatar">
+                    <img src="{{ asset('images/home-girl.jpg') }}" class="w-28 h-28 md:w-32 md:h-32 rounded-2xl ring-4 ring-white/20 shadow-xl object-cover" alt="Avatar">
                     <span class="absolute -bottom-2 -right-2 inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-white/20 backdrop-blur">
                         <i class="fa-solid fa-crown"></i> Apprenant
                     </span>
